@@ -2,6 +2,8 @@
 
 A helper for FiveM to help with attaching props to peds.
 
+!()[preview/img.webp]
+
 ## Installation
 
 1. Download zip file
