@@ -1,6 +1,6 @@
 # fivem-propplacer
 
-A helper for FiveM to help with attaching props to peds.
+Just a small helper tool I wrote for FiveM to help with attaching props to peds.
 
 ![](/preview/img.jpg)
 
@@ -14,3 +14,7 @@ A helper for FiveM to help with attaching props to peds.
 ## Usage
 
 Use `/prop` to start the ui
+
+## Support
+
+No support given, code is as-is. I am just sharing this tool for others to use, that it may be helpful.
