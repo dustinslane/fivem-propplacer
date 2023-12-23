@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prop Placement 2.0</title>
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body id="propplacement-body" style="display: none; background: transparent;">
+
+
+
+    <style>
+
+        :root{
+            --bs-alert-padding-x: 0.5rem;
+            --bs-alert-padding-y: 0.5rem;
+        }
+
+        svg {
+            height: 1em;
+            width: 1em;
+        }
+
+        .configuration {
+            width: 30vw;
+            position: absolute;
+            right: 0vw;
+            background: #222c;
+            padding: 1em;
+            color: white;
+            height: 100%;
+        }
+
+        .sliders {
+            position: absolute;
+            bottom: 1em;
+            background: #222;
+            padding: 1em;
+            color: white;
+        }
+
+        .pp {
+            margin-bottom: 0.2em;
+        }
+    </style>
+
+
+
+
+    <div class="configuration form"  data-bs-theme="dark">
+        <svg xmlns="http://www.w3.org/2000/svg" class="d-none" data-bs-theme="dark">
+            <symbol id="check-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </symbol>
+            <symbol id="info-fill" viewBox="0 0 16 16">
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </symbol>
+            <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </symbol>
+          </svg>
+
+        <div class="header">
+            <h2>Prop placer</h2> by Dustin Slane
+            <p>Hold <kbd>Left Alt</kbd> to rotate the camera and access game controls.</p>
+        </div>
+        <div class="pp">
+            <div id="bone-div">
+                <div id="error">
+
+                </div>
+                <div class="propname-grp input-group mb-3">
+                    <span class="input-group-text">&</span>
+                    <input class="form-control" type="text" placeholder="Model Name/Hash" id="propname">
+                    <span class="input-group-text">#</span>
+                    <input class="form-control" type="text" placeholder="Prop Bone Id" id="propbone">
+                    <button class="btn btn-outline-warning" onclick="UpdateModelToScript()">Update</button>
+                    <!-- <div class="d-grid gap-2">
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <div class="pp">
+            <div id="anim-div">
+                <div class="propname-grp input-group mb-3">
+                    <span class="input-group-text">&</span>
+                    <input class="form-control" type="text" placeholder="Anim Dict" id="animdict">
+                    <span class="input-group-text">@</span>
+                    <input class="form-control" type="text" placeholder="Anim Name" id="animname">
+                    <button class="btn btn-outline-warning" onclick="UpdateAnimToScript()">Play</button>
+                    <!-- <div class="d-grid gap-2">
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="pp">
+            <span id="output-coords" class="font-monospace">
+
+            </span>
+         </div>
+         <hr>
+
+        <div class="pp">
+            <div id="propx-div" class="input-group mb-3">
+                <label for="propx-div" class="form-label">X-axis</label>
+                <input class="form-range proprange" type="range" min="-2.5" max="2.5" step="0.001" id="propx">
+                <input class="form-control propval" type="number" step="0.001"  id="propx-val">
+            </div>
+        </div>
+        <div class="pp">
+            <div id="propy-div" class="input-group mb-3">
+                <label for="propy-div" class="form-label">Y-axis</label>
+                <input class="form-range proprange" type="range" min="-2.5" max="2.5" step="0.001" id="propy">
+                <input class="form-control propval" type="number" step="0.001"  id="propy-val">
+            </div>
+        </div>
+        <div class="pp">
+            <div id="propz-div" class="input-group mb-3">
+                <label for="propz-div" class="form-label">Z-axis</label>
+                <input class="form-range proprange" type="range" min="-2.5" max="2.5" step="0.001" id="propz">
+                <input class="form-control propval" type="number"  step="0.001" id="propz-val">
+            </div>
+        </div>
+        <div class="pp">
+            <div id="proprx-div" class="input-group mb-3">
+                <label for="proprx-div" class="form-label">X-rotation</label>
+                <input class="form-range proprange" type="range" min="-360" max="360" step="0.01" id="proprx">
+                <input class="form-control propval" type="number" step="0.01" id="proprx-val">
+            </div>
+        </div>
+        <div class="pp">
+            <div id="propry-div" class="input-group mb-3">
+                <label for="propry-div" class="form-label">Y-rotation</label>
+                <input class="form-range proprange" type="range" min="-360" max="360" step="0.01" id="propry">
+                <input class="form-control propval" type="number" step="0.01"  id="propry-val">
+            </div>
+        </div>
+        <div class="pp">
+            <div id="proprz-div" class="input-group mb-3">
+                <label for="proprz-div" class="form-label">Z-rotation</label>
+                <input class="form-range proprange" type="range" min="-360" max="360" step="0.001" id="proprz">
+                <input class="form-control propval" type="number"  step="0.01" id="proprz-val">
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        var x = 0.0
+        var y = 0.0
+        var z = 0.0
+        var rx = 0.0
+        var ry = 0.0
+        var rz = 0.0
+
+        const slider_x = $("#propx")
+        const slider_y = $("#propy")
+        const slider_z = $("#propz")
+        const slider_rx = $("#proprx")
+        const slider_ry = $("#propry")
+        const slider_rz = $("#proprz")
+
+        const input_x = $("#propx-val")
+        const input_y = $("#propy-val")
+        const input_z = $("#propz-val")
+        const input_rx = $("#proprx-val")
+        const input_ry = $("#propry-val")
+        const input_rz = $("#proprz-val")
+
+        const output_coords = $("#output-coords")
+
+        window.addEventListener('message', (ev) =>  {
+            let eventData = ev.data;
+            console.log(eventData)
+            switch (eventData.OP){
+                case 'ENABLE':
+                    if (eventData.DATA === 1) {
+                        $("#propplacement-body").show()
+                    }
+                    else {
+                        $("#propplacement-body").hide()
+                    }
+                    break;
+
+                case 'SHOW_ERROR':
+                    ShowError(eventData.DATA)
+                    break;
+                case 'CLEAR_ERROR':
+                    ClearError()
+                    break;
+
+                default:
+                    break;
+            }
+        })
+
+        window.addEventListener('keydown', (ev) => {
+            if (ev.code === "AltLeft" && !ev.repeat){
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", 'https://propplacement/AltLeftDown', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send();
+            }
+        })
+
+        window.addEventListener('keyup', (ev) => {
+            if (ev.code === "AltLeft" && !ev.repeat){
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", 'https://propplacement/AltLeftUp', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send();
+                return
+            }
+
+            if (ev.code === "Escape"){
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", 'https://propplacement/close', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send();
+                return
+            }
+        })
+
+        function UpdateToScript() {
+            UpdateValues()
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", 'https://propplacement/updatePlacement', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify([x, y, z, rx, ry, rz]));
+        }
+
+        function UpdateModelToScript() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", 'https://propplacement/updateModel', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify([$("#propname").val(), $("#propbone").val()]));
+        }
+
+        function UpdateAnimToScript() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", 'https://propplacement/updateAnim', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify([$("#animdict").val(), $("#animname").val()]));
+        }
+
+        function UpdateValues(){
+            x = parseFloat(slider_x.val()).toFixed(3)
+            y = parseFloat(slider_y.val()).toFixed(3)
+            z = parseFloat(slider_z.val()).toFixed(3)
+            rx = parseFloat(slider_rx.val()).toFixed(2)
+            ry = parseFloat(slider_ry.val()).toFixed(2)
+            rz = parseFloat(slider_rz.val()).toFixed(2)
+
+            input_x.val(x)
+            input_y.val(y)
+            input_z.val(z)
+            input_rx.val(rx)
+            input_ry.val(ry)
+            input_rz.val(rz)
+
+            output_coords.text(`{ ${x}, ${y}, ${z}, ${rx}, ${ry}, ${rz} }`)
+        }
+
+        function UpdateModelOnEnter(){
+
+        }
+
+        function loadProp(){
+
+        }
+
+        function ClearError(){
+            $("#error").html(`<div class="alert alert-success d-flex align-items-center" role="alert">
+              <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+              <div>
+                No Errors
+              </div>
+            </div>`)
+
+        }
+
+        function ShowError(error){
+
+            $("#error").html(`<div class="alert alert-danger d-flex align-items-center" role="alert">
+  <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  <div>
+    ${error}
+  </div>
+</div>`)
+            // $("#error").html(`<div class="text-danger">${error}</div>`)
+        }
+
+        $(".propval").each(function(){
+            this.addEventListener('change', (ev) => {
+                $(`#${ev.target.id.replace('-val', '')}`).val(ev.target.value)
+                UpdateToScript()
+            })
+
+            this.addEventListener('mousewheel', (ev) => {
+                $(`#${ev.target.id.replace('-val', '')}`).val(ev.target.value)
+                UpdateToScript()
+            })
+        })
+
+        $(".proprange").each(function(){
+            this.addEventListener('input', (ev) => {
+                UpdateToScript()
+            })
+
+            this.addEventListener('mousewheel', (ev) => {
+                $(`#${ev.target.id.replace('-val', '')}`).val(ev.target.value)
+                UpdateToScript()
+            })
+        })
+
+
+
+        $(document).ready(() => {
+            UpdateValues()
+            document.getElementById('propname').addEventListener('keyup', (ev) => {
+                if (ev.code === 'Enter'){
+                    UpdateModelToScript()
+                }
+            })
+            document.getElementById('propbone').addEventListener('keyup', (ev) => {
+               if (ev.code === 'Enter'){
+                   UpdateModelToScript()
+               }
+            })
+
+            ClearError()
+        })
+
+    </script>
+
+</body>
+</html>
