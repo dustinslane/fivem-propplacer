@@ -8,9 +8,8 @@ No support given, code is as-is. I am just sharing this tool for others to use, 
 ## Installation
 
 1. ![Download zip file](https://github.com/dustinslane/fivem-propplacer/releases/latest)
-2. Do not rename
-3. Put this in your resources folder
-4. Start the resource
+2. Put the `propplacement` folder in your resources folder. Do not rename the resource (you *can* but you'll have to fix the html)
+3. Start the resource
 
 ## Usage
 
